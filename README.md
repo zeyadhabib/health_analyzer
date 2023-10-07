@@ -1,3 +1,10 @@
+# Health Analyzer
+## Intro:
+This project is a simple grpc server streaming service, where the client sets a monitoring duration and a sampling rate for the service to report back health data (cpu utilization, memory utilization, disk utilizatio, ... etc. ).
+This is done over https. A dummy 3 tier PKI cert chain was created with the steps listed below to support this, the steps are aggregated in the `gen.sh` and `gen.ps1` scripts.
+
+
+
 To create a 3-tier certificate chain using OpenSSL and configuration files, you can follow the steps below:
 
 1. Create Root Certificate Authority and Private Key:
