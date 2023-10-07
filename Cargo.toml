@@ -1,0 +1,25 @@
+[package]
+name = "health_analyzer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "status-server"
+path = "server/src/main.rs"
+
+[[bin]]
+name = "status-client"
+path = "client/src/main.rs"
+
+[dependencies]
+prost = "0.12"
+sysinfo = "0.29"
+futures-core = "0.3"
+tonic = { version = "0.10", features = ["tls"] }
+tokio = { version = "1.32", features = ["full"] }
+tokio-stream = { version = "0.1", features = ["full"] }
+
+[build-dependencies]
+tonic-build = "0.10"

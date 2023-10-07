@@ -1,0 +1,26 @@
+syntax = "proto3";
+package status;
+
+message SpecsRequest {}
+
+message StatusRequest {
+    uint32 monitoring_duration = 1;
+    uint64 sampling_frequency = 2;
+}
+
+message SpecsResponse {
+    uint64 total_ram = 1;
+    uint64 total_disk = 2;
+    repeated double total_cpu = 3;
+}
+
+message StatusResponse {
+    uint64 used_ram = 1;
+    uint64 used_disk = 2;
+    repeated double used_cpu = 3;
+}
+
+service StatusService {
+    rpc GetSpecs(SpecsRequest) returns (SpecsResponse) {}
+    rpc GetStatus(StatusRequest) returns (stream StatusResponse) {}
+}
