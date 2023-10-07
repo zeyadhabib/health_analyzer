@@ -59,20 +59,16 @@ impl StatusService for GetStatusService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let key = std::fs::read_to_string(r".\certs\server-leaf\key.pem")?;
-    let cert = std::fs::read_to_string(r".\certs\server-leaf\leaf.pem")?;
-    let client_ca = Certificate::from_pem(r".\certs\ca\ca.pem");
+    let key = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.key")?;
+    let cert = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.pem")?;
     let identity = Identity::from_pem(cert, key);
     let status_service = GetStatusService::default();
 
     let tls = ServerTlsConfig::new()
-        .identity(identity)
-        .client_ca_root(client_ca);
-
-    drop(tls);
+        .identity(identity);
 
     Server::builder()
-        //.tls_config(tls)?
+        .tls_config(tls)?
         .add_service(StatusServiceServer::new(status_service))
         .serve(addr)
         .await?;

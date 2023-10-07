@@ -23,5 +23,5 @@ authorityInfoAccess = OCSP;URI:http://ocsp.myCA/
 authorityInfoAccess = caIssuers;URI:http://myCA/ca.cer
 
 [sans]
-DNS.1 = zeyad.com
-DNS.2 = zeyad.habib.com
+DNS.1 = zeyad.client.com
+DNS.2 = zeyad.habib.client.com

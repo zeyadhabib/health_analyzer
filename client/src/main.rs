@@ -9,21 +9,19 @@ mod status {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let server_root_ca_cert = std::fs::read_to_string(r".\certs\ca\ca.pem")?;
+    let server_root_ca_cert = std::fs::read_to_string(r".\certs\chain.pem")?;
     let server_root_ca_cert = Certificate::from_pem(server_root_ca_cert);
-    let client_cert = std::fs::read_to_string(r".\certs\client-leaf\leaf.pem")?;
-    let client_key = std::fs::read_to_string(r".\certs\client-leaf\key.pem")?;
+    let client_cert = std::fs::read_to_string(r".\certs\client-leaf\client-leaf.pem")?;
+    let client_key = std::fs::read_to_string(r".\certs\client-leaf\client-leaf.key")?;
     let client_identity = Identity::from_pem(client_cert, client_key);
 
     let tls = ClientTlsConfig::new()
-        .domain_name("localhost")
+        .domain_name("zeyad.habib.server.com")
         .ca_certificate(server_root_ca_cert)
         .identity(client_identity);
 
-    drop(tls);
-
-    let channel = Channel::from_static("http://[::1]:50051")
-        //.tls_config(tls)?
+    let channel = Channel::from_static("https://[::1]:50051")
+        .tls_config(tls)?
         .connect()
         .await?;
 
