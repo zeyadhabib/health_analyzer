@@ -10,7 +10,7 @@ use std::{ pin::Pin, time::Duration };
 use tokio_stream::{ wrappers::ReceiverStream, Stream };
 use status::status_service_server::{ StatusServiceServer ,StatusService };
 use status::{ SpecsRequest, SpecsResponse, StatusRequest, StatusResponse };
-use tonic::{ transport::{ Server, Identity, ServerTlsConfig, Certificate }, Request, Response, Status };
+use tonic::{ transport::{ Server, Identity, ServerTlsConfig }, Request, Response, Status };
 
 
 use device_status::{ get_status, get_specs }; 
@@ -31,11 +31,12 @@ impl StatusService for GetStatusService {
 
     async fn get_status (&self , _request: Request<StatusRequest>) -> Result<Response<Self::GetStatusStream>, Status> {
         println!("Got a request: {:?}", _request);
-        let (tx, rx) = mpsc::channel(4);
+        let (tx, rx) = mpsc::channel(32);
 
         let mut sys = System::new_all();
         sys.refresh_all();
 
+        // Calculate the number of iterations per second, time to sleep between iterations, and the total number of iterations
         let iterations_per_sec = _request.get_ref().sampling_frequency;
         let sleep_duration = Duration::from_secs_f64(1.0 / iterations_per_sec as f64);
         let iterations = (_request.get_ref().monitoring_duration as u64) * iterations_per_sec;
@@ -44,6 +45,7 @@ impl StatusService for GetStatusService {
         println!("Sleep duration: {:?}", sleep_duration);
         println!("Iterations: {}", iterations);
 
+        // Spawn a new task to send the status every sleep_duration
         tokio::spawn(async move {
             for _ in 0..iterations {
                 let reply = get_status();
@@ -51,6 +53,8 @@ impl StatusService for GetStatusService {
                 tokio::time::sleep(sleep_duration).await;
             }
         });
+
+        // Return the stream
         Ok(Response::new(Box::pin(ReceiverStream::new(rx))))
     } 
 }
