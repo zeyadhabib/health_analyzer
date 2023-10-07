@@ -16,7 +16,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client_identity = Identity::from_pem(client_cert, client_key);
 
     let tls = ClientTlsConfig::new()
-        .domain_name("zeyad.habib.server.com")
+        .domain_name("zeyad.server.com")
         .ca_certificate(server_root_ca_cert)
         .identity(client_identity);
 

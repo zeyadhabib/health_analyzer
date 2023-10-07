@@ -10,7 +10,7 @@ use std::{ pin::Pin, time::Duration };
 use tokio_stream::{ wrappers::ReceiverStream, Stream };
 use status::status_service_server::{ StatusServiceServer ,StatusService };
 use status::{ SpecsRequest, SpecsResponse, StatusRequest, StatusResponse };
-use tonic::{ transport::{ Server, Identity, ServerTlsConfig }, Request, Response, Status };
+use tonic::{ transport::{ Server, Identity, ServerTlsConfig, Certificate }, Request, Response, Status };
 
 
 use device_status::{ get_status, get_specs }; 
@@ -65,11 +65,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
     let key = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.key")?;
     let cert = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.pem")?;
+    let ca_root = Certificate::from_pem(std::fs::read_to_string(r".\certs\chain.pem")?);
     let identity = Identity::from_pem(cert, key);
     let status_service = GetStatusService::default();
 
     let tls = ServerTlsConfig::new()
-        .identity(identity);
+        .identity(identity)
+        .client_ca_root(ca_root);
 
     Server::builder()
         .tls_config(tls)?
