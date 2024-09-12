@@ -36,10 +36,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let args = Args::parse();
 
-    let server_root_ca_cert = std::fs::read_to_string(r".\certs\chain.pem")?;
+    let server_root_ca_cert = std::fs::read_to_string(r"./certs/chain.pem")?;
     let server_root_ca_cert = Certificate::from_pem(server_root_ca_cert);
-    let client_cert = std::fs::read_to_string(r".\certs\client-leaf\client-leaf.pem")?;
-    let client_key = std::fs::read_to_string(r".\certs\client-leaf\client-leaf.key")?;
+    let client_cert = std::fs::read_to_string(r"./certs/client-leaf/client-leaf.pem")?;
+    let client_key = std::fs::read_to_string(r"./certs/client-leaf/client-leaf.key")?;
     let client_identity = Identity::from_pem(client_cert, client_key);
 
     let tls = ClientTlsConfig::new()

@@ -5,7 +5,7 @@ pub mod status {
 }
 
 use tokio::sync::mpsc;
-use sysinfo::{ System, SystemExt };
+use sysinfo::System;
 use std::{ pin::Pin, time::Duration };
 use tokio_stream::{ wrappers::ReceiverStream, Stream };
 use status::status_service_server::{ StatusServiceServer ,StatusService };
@@ -63,9 +63,9 @@ impl StatusService for GetStatusService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let key = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.key")?;
-    let cert = std::fs::read_to_string(r".\certs\server-leaf\server-leaf.pem")?;
-    let ca_root = Certificate::from_pem(std::fs::read_to_string(r".\certs\chain.pem")?);
+    let key = std::fs::read_to_string(r"./certs/server-leaf/server-leaf.key")?;
+    let cert = std::fs::read_to_string(r"./certs/server-leaf/server-leaf.pem")?;
+    let ca_root = Certificate::from_pem(std::fs::read_to_string(r"./certs/chain.pem")?);
     let identity = Identity::from_pem(cert, key);
     let status_service = GetStatusService::default();
 
